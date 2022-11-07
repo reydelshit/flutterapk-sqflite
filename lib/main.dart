@@ -160,7 +160,10 @@ class DashboardHome extends StatelessWidget {
                                     padding: const EdgeInsets.all(10),
                                     child: ElevatedButton(
                                         child: const Text('Cancel'),
-                                        onPressed: () {}))),
+                                        onPressed: () {
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (BuildContext context) => Dashboard()));
+                                        }))),
                             SizedBox(
                                 width: 120,
                                 height: 70,

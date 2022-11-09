@@ -69,8 +69,7 @@ class LoginHome extends StatelessWidget {
                                       action: SnackBarAction(
                                           label: 'OK', onPressed: () {})));
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      Dashboard()));
+                                  builder: (BuildContext context) => User()));
                             }
                           }))),
               Row(children: <Widget>[
@@ -84,161 +83,6 @@ class LoginHome extends StatelessWidget {
                 ),
               ])
             ])));
-  }
-}
-
-class Dashboard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: DashboardHome());
-  }
-}
-
-class DashboardHome extends StatelessWidget {
-  var fullName = TextEditingController();
-  var block = TextEditingController();
-  var year = TextEditingController();
-
-  void addUser(BuildContext context) {
-    showModalBottomSheet(
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-        context: context,
-        isScrollControlled: true,
-        builder: (context) {
-          return Container(
-            color: Colors.white,
-            height: MediaQuery.of(context).size.height / 2,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox(
-                        height: 16.0,
-                      ),
-                      const CircleAvatar(
-                        radius: 50.0,
-                      ),
-                      const SizedBox(
-                        height: 16.0,
-                      ),
-                      const TextField(
-                          decoration: InputDecoration(
-                        labelText: "Full Name",
-                        hintStyle: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                        labelStyle: TextStyle(fontSize: 13, color: Colors.grey),
-                      )),
-                      const TextField(
-                          decoration: InputDecoration(
-                        labelText: "Block",
-                        hintStyle: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                        labelStyle: TextStyle(fontSize: 13, color: Colors.grey),
-                      )),
-                      const TextField(
-                          decoration: InputDecoration(
-                        labelText: "Year",
-                        hintStyle: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                        labelStyle: TextStyle(fontSize: 13, color: Colors.grey),
-                      )),
-                      const SizedBox(
-                        height: 16.0,
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                                width: 120,
-                                height: 70,
-                                child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: ElevatedButton(
-                                        child: const Text('Cancel'),
-                                        onPressed: () {}))),
-                            SizedBox(
-                                width: 120,
-                                height: 70,
-                                child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: ElevatedButton(
-                                        child: const Text('Add User'),
-                                        onPressed: () {})))
-                          ])
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Center(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        "https://media-exp1.licdn.com/dms/image/C5603AQFfPjVO7Bulow/profile-displayphoto-shrink_800_800/0/1652540197138?e=2147483647&v=beta&t=qxYfICadGRXZVbBN_Zm-nJIWcwHzJMqS8LyrPr_6uQA"),
-                    radius: 50.0,
-                  ),
-                  const Text('Reydel A. Ocon'),
-                  SizedBox(
-                      width: 170,
-                      height: 70,
-                      child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: ElevatedButton(
-                              child: const Text('Logout'),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        Login()));
-                              }))),
-                ]),
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            addUser(context);
-          },
-          child: const Icon(Icons.add)),
-      drawer: Drawer(
-          child: Column(
-        children: <Widget>[
-          const CircleAvatar(
-            backgroundImage: NetworkImage(
-                "https://media-exp1.licdn.com/dms/image/C5603AQFfPjVO7Bulow/profile-displayphoto-shrink_800_800/0/1652540197138?e=2147483647&v=beta&t=qxYfICadGRXZVbBN_Zm-nJIWcwHzJMqS8LyrPr_6uQA"),
-            radius: 50.0,
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (BuildContext context) => User()));
-            },
-            child: const ListTile(
-                leading: Icon(Icons.verified_user),
-                title: Text('List of Users')),
-          )
-        ],
-      )),
-    );
   }
 }
 
@@ -407,56 +251,314 @@ class UserHome extends StatefulWidget {
 }
 
 class _UserHome extends State<UserHome> {
-  Future deleteUser(String user) {
+  var fullnameController = new TextEditingController();
+  var yearController = new TextEditingController();
+  var blockController = new TextEditingController();
+  List<Map<String, dynamic>> students = [];
+  var student_id;
+
+  void resetControllers() {
+    fullnameController.text = '';
+    yearController.text = '';
+    blockController.text = '';
+    student_id = 0;
+  }
+
+  void initState() {
+    super.initState();
+    loadAllStudents();
+  }
+
+  Future<void> loadAllStudents() async {
+    final data = await DatabaseHelper.retrieveAllStudents();
+    setState(() {
+      students = data;
+    });
+  }
+
+  void addUserModal(BuildContext context) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return Container(
+            color: Colors.white,
+            height: MediaQuery.of(context).size.height,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      TextField(
+                        controller: fullnameController,
+                      ),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      TextField(
+                        controller: yearController,
+                      ),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      TextField(
+                        controller: blockController,
+                      ),
+                      SizedBox(height: 16.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Cancel'),
+                          ),
+                          SizedBox(width: 20.0),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (fullnameController.text.isEmpty) {
+                                //Error Message
+                              } else if (yearController.text.isEmpty) {
+                                //Error Message
+                              } else if (blockController.text.isEmpty) {
+                                //Error Message
+                              } else {
+                                var result = await DatabaseHelper.insertStudent(
+                                    fullnameController.text,
+                                    yearController.text,
+                                    blockController.text);
+                                if (result == 1) {
+                                  //Success Message
+                                } else {
+                                  //Error Message
+                                }
+                              }
+                              fullnameController.text = '';
+                              yearController.text = "";
+                              blockController.text = "";
+                              loadAllStudents();
+                              setState(() {});
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Add'),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  void updateUserModal(BuildContext context) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return Container(
+            color: Colors.white,
+            height: MediaQuery.of(context).size.height,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      CircleAvatar(
+                        radius: 50.0,
+                      ),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      TextField(
+                        controller: fullnameController,
+                      ),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      TextField(
+                        controller: yearController,
+                      ),
+                      SizedBox(
+                        height: 16.0,
+                      ),
+                      TextField(
+                        controller: blockController,
+                      ),
+                      SizedBox(height: 16.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Cancel'),
+                          ),
+                          SizedBox(width: 20.0),
+                          ElevatedButton(
+                            onPressed: () async {
+                              if (fullnameController.text.isEmpty) {
+                                //Error Message
+                              } else if (yearController.text.isEmpty) {
+                                //Error Message
+                              } else if (blockController.text.isEmpty) {
+                                //Error Message
+                              } else {
+                                var result = await DatabaseHelper.updateStudent(
+                                    student_id,
+                                    fullnameController.text,
+                                    yearController.text,
+                                    blockController.text);
+                                if (result == 1) {
+                                  //Success Message
+                                } else {
+                                  //error message
+                                }
+                              }
+                              resetControllers();
+                              loadAllStudents();
+                              setState(() {});
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('Update'),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Future deleteWarning(String fullname, int id) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) {
-          return StatefulBuilder(builder: (context, setState) {
-            return AlertDialog(
-              title: Text('Confirmation'),
-              content: SingleChildScrollView(
+          return StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: Text('Warning'),
+                content: SingleChildScrollView(
                   child: ListBody(
-                children: [
-                  Center(child: Text('Are you sure you want to remove $user')),
-                ],
-              )),
-              actions: [
-                TextButton(
+                    children: [
+                      Center(),
+                      SizedBox(
+                        height: 18.0,
+                      ),
+                      Center(
+                          child: Text(
+                        'Are you sure you want to remove  $fullname?',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontSize: 20.0),
+                      ))
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    child: const Text('Cancel'),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text('Close')),
-                TextButton(
-                  onPressed: () {},
-                  child: Text('Delete'),
-                )
-              ],
-            );
-          });
+                  ),
+                  TextButton(
+                      child: const Text('Delete'),
+                      onPressed: () async {
+                        var result = await DatabaseHelper.deleteStudent(id);
+                        if (result == 1) {
+                          //Success Message
+                        } else {
+                          //Error Message
+                        }
+                        loadAllStudents();
+                        setState(() {});
+                        Navigator.of(context).pop();
+                      }),
+                ],
+              );
+            },
+          );
         });
   }
-
-  var users = ['Reydel Ocon', 'Ben Dover', 'Alex Caruso', 'Lebron Jahames'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          addUserModal(context);
+        },
+        child: Icon(Icons.add),
+      ),
       appBar: AppBar(
-        title: const Text('List of Users '),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (BuildContext context) => User()));
+          },
+        ),
+        backgroundColor: Colors.green.shade900,
+        title: Text('List of Students'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  //loadData();
+                });
+              },
+              icon: Icon(Icons.refresh))
+        ],
       ),
       body: ListView.builder(
-          itemCount: users.length,
+          itemCount: students.length,
           itemBuilder: (BuildContext context, int index) {
             return ListTile(
-                leading: Text(users[index].toString()),
-//                 title: Text("User # $index"),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    deleteUser(users[index].toString());
-                  },
-                ));
+              leading: IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  fullnameController.text = students[index]['fullname'];
+                  yearController.text = students[index]['year'];
+                  blockController.text = students[index]['block'];
+                  student_id = students[index]['id'];
+                  updateUserModal(context);
+                },
+              ),
+              title: Text(students[index]['fullname']),
+              subtitle: Text(
+                  students[index]['year'] + '-' + students[index]['block']),
+              trailing: IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  deleteWarning(
+                      students[index]['fullname'], students[index]['id']);
+                },
+              ),
+            );
           }),
     );
   }

@@ -33,7 +33,7 @@ class DatabaseHelper {
   }
 
   //Function to retrieve all Student data
-  static Future<List<Map<String, dynamic>>> retrieveAllStudents() async {
+  static Future<List<Map<String, dynamic>>>? retrieveAllStudents() async {
     final db = await DatabaseHelper.createDatabase();
     return await db.query('students', orderBy: 'fullname');
   }

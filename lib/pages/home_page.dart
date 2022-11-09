@@ -25,12 +25,15 @@ class _UserHome extends State<HomePage> {
 
   @override
   void initState() {
+    loadAllStudents();
     super.initState();
   }
 
   loadAllStudents() async {
     final data = await DatabaseHelper.retrieveAllStudents();
-    students = data!;
+    setState(() {
+      students = data!;
+    });
   }
 
   void addUserModal(BuildContext context) {

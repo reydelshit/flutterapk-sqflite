@@ -90,7 +90,9 @@ class _UserHome extends State<HomePage> {
 
                               if (result > 0) {
                                 resetControllers();
-                                loadAllStudents();
+                                setState(() {
+                                  loadAllStudents();
+                                });
                                 Navigator.of(context).pop();
                               }
 

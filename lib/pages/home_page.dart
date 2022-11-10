@@ -74,9 +74,6 @@ class _UserHome extends State<HomePage> {
                         height: 16.0,
                       ),
                       TextField(
-                        decoration: const InputDecoration(
-                          hintText: 'Fullname',
-                        ),
                         controller: fullnameController,
                         decoration: const InputDecoration(
                             labelText: "Student Name",
@@ -208,18 +205,12 @@ class _UserHome extends State<HomePage> {
                         height: 16.0,
                       ),
                       TextField(
-                        decoration: const InputDecoration(
-                          hintText: 'Year',
-                        ),
                         controller: yearController,
                       ),
                       const SizedBox(
                         height: 16.0,
                       ),
                       TextField(
-                        decoration: const InputDecoration(
-                          hintText: 'Block',
-                        ),
                         controller: blockController,
                       ),
                       const SizedBox(height: 16.0),

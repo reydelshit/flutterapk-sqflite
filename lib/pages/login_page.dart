@@ -25,9 +25,19 @@ class LoginPage extends StatelessWidget {
                   radius: 50.0),
               TextField(
                 controller: usernameController,
+                decoration: const InputDecoration(
+                    hintText: "Username",
+                    hintStyle:
+                        TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    prefixIcon: Icon(Icons.person_outline_outlined)),
               ),
               TextField(
                 controller: passwordController,
+                decoration: const InputDecoration(
+                    hintText: "Password",
+                    hintStyle:
+                        TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    prefixIcon: Icon(Icons.remove_red_eye_outlined)),
               ),
               SizedBox(
                   width: 120,

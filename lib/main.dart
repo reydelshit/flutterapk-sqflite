@@ -9,7 +9,7 @@ void main() {
   runApp((MaterialApp(
     title: 'Flutter App',
     theme: ThemeData(
-      primarySwatch: Colors.blue,
+      primarySwatch: Colors.green,
     ),
     routes: {
       AppConstants.loginPageRoute: (context) => LoginPage(),

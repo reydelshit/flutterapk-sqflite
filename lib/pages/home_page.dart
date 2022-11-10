@@ -110,7 +110,7 @@ class _UserHome extends State<HomePage> {
                           ElevatedButton(
                             // adjust width height elevated button
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Colors.green.shade700,
                               foregroundColor: Colors.white,
                               minimumSize: const Size(100, 50),
                               shape: RoundedRectangleBorder(
@@ -125,7 +125,7 @@ class _UserHome extends State<HomePage> {
                           const SizedBox(width: 20.0),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Colors.green.shade700,
                               foregroundColor: Colors.white,
                               minimumSize: const Size(100, 50),
                               shape: RoundedRectangleBorder(
@@ -331,6 +331,7 @@ class _UserHome extends State<HomePage> {
         onPressed: () {
           addUserModal(context);
         },
+        backgroundColor: Colors.green.shade700,
         child: const Icon(Icons.add),
       ),
       appBar: AppBar(
@@ -340,7 +341,7 @@ class _UserHome extends State<HomePage> {
             Navigator.of(context).pop();
           },
         ),
-        backgroundColor: Colors.green.shade900,
+        backgroundColor: Colors.green.shade700,
         title: const Text('List of Students'),
         actions: [
           IconButton(
